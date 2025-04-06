@@ -1,38 +1,35 @@
-import mongoose, { Connection } from "mongoose";
+import { Db, MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI ?? "";
+const uri = process.env.MONGODB_URI;
+const options = {};
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
+if (!uri) {
+  throw new Error('Please define the MONGODB_URI environment variable');
 }
 
-// Define the cache interface correctly
-interface MongooseCache {
-  conn: Connection | null;
-  promise: Promise<Connection> | null;
-}
-
-// Use TypeScript's `declare global` to store cache globally
 declare global {
-  var mongooseCache: MongooseCache | undefined;
+  var _mongoClientPromise: Promise<MongoClient>;
 }
 
-let cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
+let client: MongoClient; // Uncommented and properly typed
+let clientPromise: Promise<MongoClient>;
 
-async function dbConnect() {
-  if (cached.conn) return cached.conn;
-
-  if (!cached.promise) {
-    const opts = { bufferCommands: false };
-    
-    // Ensure the returned connection matches `mongoose.Connection`
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((m) => m.connection);
+if (process.env.NODE_ENV === 'development') {
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    global._mongoClientPromise = client.connect();
   }
-
-  cached.conn = await cached.promise;
-  global.mongooseCache = cached; // Store globally
-
-  return cached.conn;
+  clientPromise = global._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
 }
 
-export default dbConnect;
+// Helper function to get database instance
+const DB_NAME = "VOLT_DB"
+export async function getDb() {
+  const client = await clientPromise;
+  return client.db(DB_NAME); // Explicit database name
+}
+
+export default clientPromise;

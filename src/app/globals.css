@@ -124,3 +124,42 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Smooth dropdown animations */
+[data-state="open"] {
+  animation: fadeIn 100ms ease-out;
+}
+
+[data-state="closed"] {
+  animation: fadeOut 100ms ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Better focus states */
+[data-radix-dropdown-menu-item]:focus {
+  outline: none;
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}

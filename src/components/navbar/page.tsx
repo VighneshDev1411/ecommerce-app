@@ -5,6 +5,13 @@ import { ChevronDown, Search, ShoppingCart, User } from "lucide-react";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import volt_logo from "../../../public/assets/images/volt.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { UserDropdown } from "../DropdownAuthentication/page";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,6 +24,7 @@ export default function Navbar({
   setCartOpen: (open: boolean) => void;
 }) {
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [isLoggedIn] = useState(false); // Temporary - replace with real auth later
 
   const toggleDropdown = (menu: string) => {
     setDropdownOpen(dropdownOpen === menu ? null : menu);
@@ -31,7 +39,7 @@ export default function Navbar({
           <Image src={volt_logo} alt="logo" className="w-16" />
         </div>
 
-        <div className="hidden md:flex space-x-6 text-white-800 font-medium">
+        <div className="hidden md:flex space-x-6 text-white font-medium">
           {[
             "CRAZY DEALS",
             "WELLNESS",
@@ -43,7 +51,7 @@ export default function Navbar({
             <div className="relative" key={menu}>
               <button
                 onClick={() => toggleDropdown(menu)}
-                className="hover:text-gray-700 flex items-center space-x-1"
+                className="hover:text-gray-700 flex items-center space-x-1 text-[#222222]"
               >
                 <span>{menu}</span>
                 <ChevronDown className="w-4 h-4" />
@@ -60,16 +68,18 @@ export default function Navbar({
               )}
             </div>
           ))}
-          <a href="#" className="hover:text-gray-600">
+          <a href="#" className="hover:text-gray-600 text-[#222222]">
             BLOGS
           </a>
         </div>
 
         <div className="flex items-center space-x-4 text-white-800">
-          <Search className="w-5 h-5 cursor-pointer hover:text-gray-600" />
-          <User className="w-5 h-5 cursor-pointer hover:text-gray-600" />
+          <Search className="w-5 h-5 cursor-pointer hover:text-gray-600 text-[#222222]" />
+
+          <UserDropdown />
+
           <ShoppingCart
-            className="w-5 h-5 cursor-pointer hover:text-gray-600"
+            className="w-5 h-5 cursor-pointer hover:text-gray-600 text-[#222222]"
             onClick={() => setCartOpen(true)}
           />
         </div>
