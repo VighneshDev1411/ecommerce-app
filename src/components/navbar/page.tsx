@@ -5,6 +5,7 @@ import { ChevronDown, Search, ShoppingCart, User } from "lucide-react";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import volt_logo from "../../../public/assets/images/volt.png";
+import { useCart } from "@/context/CartContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +20,10 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-export default function Navbar({
-  setCartOpen,
-}: {
-  setCartOpen: (open: boolean) => void;
-}) {
+export default function Navbar({}: {}) {
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [isLoggedIn] = useState(false); // Temporary - replace with real auth later
-
+  const { cartOpen, setCartOpen, cartTotal, itemCount } = useCart();
   const toggleDropdown = (menu: string) => {
     setDropdownOpen(dropdownOpen === menu ? null : menu);
   };
@@ -81,10 +78,17 @@ export default function Navbar({
 
           <UserDropdown />
 
-          <ShoppingCart
-            className="w-5 h-5 cursor-pointer hover:text-gray-600 text-[#222222]"
-            onClick={() => setCartOpen(true)}
-          />
+          <div className="relative">
+            <ShoppingCart
+              className="w-5 h-5 cursor-pointer hover:text-gray-600 text-[#222222]"
+              onClick={() => setCartOpen(true)}
+            />
+            <div className="w-3.5 h-3.5 rounded-full absolute -top-1 -right-1 flex justify-center items-center bg-[#222222]">
+              <span className="text-white text-xs font-semibold">
+                {itemCount}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </nav>

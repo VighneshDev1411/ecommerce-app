@@ -26,9 +26,8 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
         removeFromCart={removeFromCart}
       />
       <main>{children}</main>
-      <div>
-        <Footer2 />
-      </div>
+
+      <Footer2 />
     </div>
   );
 };

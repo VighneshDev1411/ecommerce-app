@@ -24,9 +24,10 @@ import {
 } from "react-icons/ri";
 import CategoriesSection from "../components/CategoriesSection/page";
 import pa from "../../public/assets/images/pa.png";
+import { useCart } from "@/context/CartContext";
 
 export default function Home() {
-  const [cartOpen, setCartOpen] = useState(false);
+  const { cartOpen, setCartOpen } = useCart();
   return (
     <div className="flex flex-col">
       <CategoryTabs />

@@ -24,7 +24,7 @@ export async function GET(req: Request, { params }: { params: { category: string
   const products = await collection.find().toArray();
 
   return NextResponse.json(products.map((doc) => ({
-    _id: doc._id.toString(),
+    id: doc._id?.toString() ?? '',
     name: doc.Name,
     price: doc.Price,
     rating: doc.Rating,

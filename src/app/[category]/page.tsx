@@ -5,7 +5,7 @@ import ProductList from "../../components/ProductList/page";
 import { useState, useEffect } from "react";
 
 interface ProductProps {
-  _id?: string;
+  id: string;
   name: string;
   price: number;
   rating: number;
@@ -47,7 +47,7 @@ export default function CategoryPage({
   return (
     <div className="flex">
       <div className="w-3/10 h-screen flex justify-center items-center p-4">
-        <div className="w-full mt-16 max-w-xs">
+        <div className="w-full max-w-xs">
           <ProductFilters />
         </div>
       </div>

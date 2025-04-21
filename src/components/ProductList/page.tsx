@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface ProductProps {
-  _id?: string;
+  id?: string;
   name: string;
   price: number;
   rating: number;
@@ -31,7 +31,7 @@ export default function ProductList({ products }: any) {
   };
 
   const removeFromCart = (productId?: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,12 +53,8 @@ export default function ProductList({ products }: any) {
         {/* Product Grid - Maintains your 5 items per row layout */}
         <div className="flex flex-wrap justify-center">
           {currentProducts.map((product: ProductProps) => (
-            <div key={product._id} className="w-1/2 p-2 ">
-              <ProductCard
-                {...product}
-                image={product.image}
-                addToCart={addToCart}
-              />
+            <div key={product.id} className="w-1/2 p-2 ">
+              <ProductCard {...product} image={product.image} />
             </div>
           ))}
         </div>

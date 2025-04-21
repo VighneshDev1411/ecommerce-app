@@ -1,25 +1,37 @@
 "use client";
 import Image from "next/image";
+import { useCart } from "@/context/CartContext";
 
 interface ProductProps {
-  _id?: string;
+  id: string;
   name: string;
   price: number;
   rating: number;
   image: string;
-  addToCart?: (product: ProductProps) => void;
   category: string;
 }
 
 const ProductCard: React.FC<ProductProps> = ({
-  _id,
+  id,
   name,
   price,
   rating,
   image,
-  addToCart,
   category,
 }) => {
+  const { addToCart } = useCart();
+  const handleAddToCart = () => {
+    if (!id) return;
+    addToCart({
+      id: String(id),
+      name,
+      price,
+      rating, // <-- important!
+      image: image || "",
+      category,
+    });
+  };
+
   return (
     <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
       {/* Center the Image */}
@@ -67,10 +79,7 @@ const ProductCard: React.FC<ProductProps> = ({
           </span>
           <button
             className="text-white bg-[#222222] hover:bg-[#333333] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={() =>
-              addToCart &&
-              addToCart({ _id, name, price, rating, image, category })
-            }
+            onClick={handleAddToCart}
           >
             Add to cart
           </button>

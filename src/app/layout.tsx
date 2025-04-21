@@ -2,6 +2,7 @@
 import "./globals.css";
 import ClientLayout from "../components/ClientLayout"; // ✅ New file you'll create
 import { AuthProvider } from "@/providers/AuthProvider";
+import { CartProvider } from "@/context/CartContext";
 
 export const metadata = {
   title: "VOLT Supplements",
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
-          <ClientLayout>{children}</ClientLayout>
+          <CartProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

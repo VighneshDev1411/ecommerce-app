@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useCart } from "@/context/CartContext";
 
 interface CartProps {
   open: boolean;
@@ -19,19 +20,19 @@ interface CartProps {
   removeFromCart: (id: number) => void;
 }
 
-export default function Cart({
-  open,
-  setOpen,
-  cart,
-  removeFromCart,
-}: CartProps) {
-  // Calculate subtotal
-  const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-
+export default function Cart() {
+  const {
+    cart,
+    cartOpen,
+    setCartOpen,
+    removeFromCart,
+    updateQuantity,
+    cartTotal,
+  } = useCart();
   return (
     <Dialog
-      open={open}
-      onClose={() => setOpen(false)}
+      open={cartOpen}
+      onClose={() => setCartOpen(false)}
       className="relative z-10"
     >
       <DialogBackdrop className="fixed inset-0 bg-gray-500/75 transition-opacity" />
@@ -48,7 +49,7 @@ export default function Cart({
                     </DialogTitle>
                     <button
                       type="button"
-                      onClick={() => setOpen(false)}
+                      onClick={() => setCartOpen(false)}
                       className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                     >
                       <XMarkIcon aria-hidden="true" className="size-6" />
@@ -67,7 +68,7 @@ export default function Cart({
                             <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                               <img
                                 alt={product.name}
-                                src={product.image}
+                                src={product.image.replace("/public", "")}
                                 className="size-full object-cover"
                               />
                             </div>
@@ -102,13 +103,13 @@ export default function Cart({
                   <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                     <div className="flex justify-between text-base font-medium text-gray-900">
                       <p>Subtotal</p>
-                      <p>₹{subtotal.toFixed(2)}</p>
+                      <p>₹{cartTotal.toFixed(2)}</p>
                     </div>
                     <button className="mt-6 w-full bg-[#222222] text-white py-3 rounded-md shadow-md hover:bg-[#333333]">
                       Checkout
                     </button>
                     <button
-                      onClick={() => setOpen(false)}
+                      onClick={() => setCartOpen(false)}
                       className="mt-6 text-[#222222] hover:text-[#000000] text-sm"
                     >
                       Continue Shopping &rarr;
