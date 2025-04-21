@@ -12,10 +12,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Reset error message
-
-    // Log the login attempt details
-    console.log("Login attempt with:", email, password);
+    setError("");
 
     const result = await signIn("credentials", {
       email,
@@ -23,10 +20,12 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    if (result?.error) {
-      setError(result.error); // Display error
+    console.log("SignIn result:", result); // 🔍 DEBUG
+
+    if (result?.ok) {
+      router.push("/");
     } else {
-      router.push("/"); // Redirect after successful login
+      setError("Invalid email or password");
     }
   };
 
