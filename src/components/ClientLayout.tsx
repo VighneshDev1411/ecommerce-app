@@ -15,8 +15,10 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <>
-      <Navbar setCartOpen={setCartOpen} />
+    <div className="flex w-full flex-col justify-center gap-8 items-center">
+      <div className="w-full">
+        <Navbar setCartOpen={setCartOpen} />
+      </div>
       <Cart
         open={cartOpen}
         setOpen={setCartOpen}
@@ -24,10 +26,10 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
         removeFromCart={removeFromCart}
       />
       <main>{children}</main>
-      <div className="p-8">
+      <div>
         <Footer2 />
       </div>
-    </>
+    </div>
   );
 };
 

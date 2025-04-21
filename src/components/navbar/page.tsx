@@ -35,7 +35,7 @@ export default function Navbar({
     <nav
       className={`bg-0A2463 shadow-md border-t-4 border-[#222222] ${inter.className}`}
     >
-      <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+      <div className="w-full flex justify-between items-center px-6 py-3">
         <div className="flex items-center space-x-3">
           <Link href="/">
             <Image src={volt_logo} alt="logo" className="w-16 rounded-lg" />
