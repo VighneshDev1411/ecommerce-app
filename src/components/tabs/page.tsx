@@ -84,7 +84,7 @@ const CategoryTabs = () => {
       {/* Show More Text Link */}
       {/* Show More / Show Less Link at Top Right */}
       {!loading && products.length > 5 && (
-        <div className="flex mr-24 mb-6 justify-end px-6 mt-2">
+        <div className="flex mr-4 mb-6 justify-end px-6 mt-2">
           <span
             className="text-sm text-[#222222] font-semibold cursor-pointer hover:underline"
             onClick={() =>

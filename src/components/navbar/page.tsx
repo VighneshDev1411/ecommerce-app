@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { UserDropdown } from "../DropdownAuthentication/page";
+import Link from "next/link";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +37,9 @@ export default function Navbar({
     >
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-3">
-          <Image src={volt_logo} alt="logo" className="w-16" />
+          <Link href="/">
+            <Image src={volt_logo} alt="logo" className="w-16 rounded-lg" />
+          </Link>
         </div>
 
         <div className="hidden md:flex space-x-6 text-white font-medium">

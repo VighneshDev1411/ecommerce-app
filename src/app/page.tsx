@@ -11,11 +11,24 @@ import Example from "../components/ShoppingCart/page";
 import Cart from "../components/ShoppingCart/page";
 import ProductAuthenticity from "../components/SectionProductAutheticity/page";
 
+import {
+  RiHeartPulseFill,
+  RiSeedlingFill,
+  RiFireFill,
+  RiScales3Fill,
+  RiCapsuleFill,
+  RiMoonFill,
+  RiWomenFill,
+  RiMentalHealthFill,
+  RiArrowRightLine,
+} from "react-icons/ri";
+import CategoriesSection from "../components/CategoriesSection/page";
+import pa from "../../public/assets/images/pa.png";
+
 export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   return (
     <div className="flex flex-col">
-      <Navbar setCartOpen={setCartOpen} />
       <CategoryTabs />
       <Cart
         open={cartOpen}
@@ -25,15 +38,24 @@ export default function Home() {
           throw new Error("Function not implemented.");
         }}
       />
-      <ProductAuthenticity />
-
-      <div className="mt-3 ml-24">
-        <span className="font-semibold text-[#222222] text-2xl">
-          Categories
-        </span>
+      <div className="ml-36 mr-36 w-8xl">
+        {" "}
+        {/* Add w-full to parent */}
+        <Image className="w-full" src={pa} alt="authenticty_tag" />
+      </div>
+      <div>
+        <CategoriesSection />
       </div>
 
       {/* Best Sellers Section */}
     </div>
   );
 }
+
+// import React from 'react';
+
+// const CategoriesSection: React.FC = () => {
+
+// };
+
+// export default CategoriesSection;

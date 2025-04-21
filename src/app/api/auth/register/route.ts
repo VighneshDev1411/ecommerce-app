@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../../lib/mongodb";
 
-
 export async function POST(request: Request) {
   try {
     const { name, email, password } = await request.json();
     const client = await clientPromise;
-    const db = client.db();
 
-    // Check if user already exists
+    // Use the VOLT_DB database instead of the default "test"
+    const db = client.db("VOLT_DB");
+
     const existingUser = await db.collection("users").findOne({ email });
     if (existingUser) {
       return NextResponse.json(
