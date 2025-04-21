@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import Navbar from "./navbar/page";
 import Cart from "./ShoppingCart/page";
+import { Footer2 } from "./Footer/page";
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const [cartOpen, setCartOpen] = useState(false);
@@ -23,6 +24,9 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
         removeFromCart={removeFromCart}
       />
       <main>{children}</main>
+      <div className="p-8">
+        <Footer2 />
+      </div>
     </>
   );
 };
