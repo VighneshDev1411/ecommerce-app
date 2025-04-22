@@ -11,8 +11,71 @@ export default function ProfileFormPage() {
   const [dietaryPreference, setDietaryPreference] = useState("");
   const [height, setHeight] = useState("");
   const [fitnessGoal, setFitnessGoal] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  // const router = useRouter();
+  const [formData, setFormData] = useState({
+    gender: "",
+    weight: "",
+    weightGoal: "",
+    allergen: "",
+    dietaryPreference: "",
+    height: "",
+    fitnessGoal: "",
+    // Add other profile fields as needed
+  });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/profile/complete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json", // Explicitly request JSON
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // First check if the response is OK
+      if (!response.ok) {
+        // Try to get error message from response
+        const errorData = await response.text();
+        throw new Error(
+          errorData.startsWith("{")
+            ? JSON.parse(errorData).error
+            : `Server error: ${response.status}`
+        );
+      }
+
+      // Only try to parse as JSON if content-type is correct
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Received non-JSON response");
+      }
+
+      const data = await response.json();
+      router.push("/");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Submission failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const totalFields = 7;
   const filledFields = [
@@ -27,43 +90,6 @@ export default function ProfileFormPage() {
 
   const progressPercent = Math.round((filledFields / totalFields) * 100);
   const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          gender,
-          weight,
-          weightGoal,
-          allergen,
-          dietaryPreference,
-          height,
-          fitnessGoal,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to save profile");
-      }
-
-      // Handle success — maybe redirect or show message
-      alert("Profile saved successfully!");
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      router.push("/");
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-black-100 flex items-center justify-center p-4">
@@ -208,12 +234,12 @@ export default function ProfileFormPage() {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
             className={`w-full ${
-              isLoading ? "bg-blue-400" : "bg-[#222222] hover:bg-[#333333]"
+              isSubmitting ? "bg-blue-400" : "bg-[#222222] hover:bg-[#333333]"
             } text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex justify-center items-center`}
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <>
                 <svg
                   className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
