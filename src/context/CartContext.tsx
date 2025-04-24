@@ -7,6 +7,8 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -36,69 +38,129 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<Product[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  // Initialize cart from localStorage
+  // Fetch cart from API when user is authenticated
   useEffect(() => {
-    setIsMounted(true);
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Failed to parse cart data", e);
+    const fetchCart = async () => {
+      if (status === "authenticated") {
+        try {
+          const response = await fetch("/api/cart");
+          if (response.ok) {
+            const data = await response.json();
+            setCart(data);
+          }
+        } catch (error) {
+          console.error("Error fetching cart:", error);
+        }
       }
-    }
-  }, []);
+    };
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart, isMounted]);
+    fetchCart();
+  }, [status]);
 
-  const addToCart = (product: Product) => {
-    if (!product.id) {
-      console.error("Cannot add product to cart: missing ID");
+  const addToCart = async (product: Product) => {
+    if (status !== "authenticated") {
+      router.push("/login");
       return;
     }
-    setCart((prevCart) => {
-      // Check if product already exists in cart
-      const existingItem = prevCart.find((item) => item.id === product.id);
 
-      if (existingItem) {
-        // Update quantity if exists
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
-            : item
-        );
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product,
+          action: "add",
+        }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCart(updatedCart);
+        setCartOpen(true);
       }
-      // Add new item with quantity 1
-      return [...prevCart, { ...product, quantity: 1 }];
-    });
-    setCartOpen(true);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  const removeFromCart = async (productId: string) => {
+    if (status !== "authenticated") return;
+
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product: { id: productId },
+          action: "remove",
+        }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCart(updatedCart);
+      }
+    } catch (error) {
+      console.error("Error removing from cart:", error);
+    }
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = async (productId: string, quantity: number) => {
+    if (status !== "authenticated") return;
+
     if (quantity < 1) {
       removeFromCart(productId);
       return;
     }
 
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
-      )
-    );
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product: { id: productId, quantity },
+          action: "update",
+        }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCart(updatedCart);
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const clearCart = async () => {
+    if (status !== "authenticated") return;
+
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "clear",
+        }),
+      });
+
+      if (response.ok) {
+        setCart([]);
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
   };
 
   const cartTotal = cart.reduce(

@@ -4,19 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ProfileFormPage() {
-  const [gender, setGender] = useState("");
-  const [weight, setWeight] = useState("");
-  const [weightGoal, setWeightGoal] = useState("");
-  const [allergen, setAllergen] = useState("");
-  const [dietaryPreference, setDietaryPreference] = useState("");
-  const [height, setHeight] = useState("");
-  const [fitnessGoal, setFitnessGoal] = useState("");
-  // const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  // const router = useRouter();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     gender: "",
     weight: "",
@@ -25,8 +15,8 @@ export default function ProfileFormPage() {
     dietaryPreference: "",
     height: "",
     fitnessGoal: "",
-    // Add other profile fields as needed
   });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -37,14 +27,12 @@ export default function ProfileFormPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json", // Explicitly request JSON
+          Accept: "application/json",
         },
         body: JSON.stringify(formData),
       });
 
-      // First check if the response is OK
       if (!response.ok) {
-        // Try to get error message from response
         const errorData = await response.text();
         throw new Error(
           errorData.startsWith("{")
@@ -53,7 +41,6 @@ export default function ProfileFormPage() {
         );
       }
 
-      // Only try to parse as JSON if content-type is correct
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         throw new Error("Received non-JSON response");
@@ -69,7 +56,7 @@ export default function ProfileFormPage() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
@@ -78,18 +65,10 @@ export default function ProfileFormPage() {
   };
 
   const totalFields = 7;
-  const filledFields = [
-    gender,
-    weight,
-    weightGoal,
-    allergen,
-    dietaryPreference,
-    height,
-    fitnessGoal,
-  ].filter((field) => field.trim() !== "").length;
-
+  const filledFields = Object.values(formData).filter(
+    (field) => field.trim() !== ""
+  ).length;
   const progressPercent = Math.round((filledFields / totalFields) * 100);
-  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-black-100 flex items-center justify-center p-4">
@@ -133,8 +112,9 @@ export default function ProfileFormPage() {
             </label>
             <input
               type="text"
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="Male / Female / Other"
               required
@@ -147,8 +127,9 @@ export default function ProfileFormPage() {
             </label>
             <input
               type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
+              name="weight"
+              value={formData.weight}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               required
             />
@@ -160,8 +141,9 @@ export default function ProfileFormPage() {
             </label>
             <input
               type="text"
-              value={weightGoal}
-              onChange={(e) => setWeightGoal(e.target.value)}
+              name="weightGoal"
+              value={formData.weightGoal}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="e.g., Lose 5kg"
               required
@@ -173,8 +155,9 @@ export default function ProfileFormPage() {
               Allergen
             </label>
             <select
-              value={allergen}
-              onChange={(e) => setAllergen(e.target.value)}
+              name="allergen"
+              value={formData.allergen}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               required
             >
@@ -190,15 +173,15 @@ export default function ProfileFormPage() {
               Dietary Preference
             </label>
             <select
-              value={dietaryPreference}
-              onChange={(e) => setDietaryPreference(e.target.value)}
+              name="dietaryPreference"
+              value={formData.dietaryPreference}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               required
             >
               <option value="">Select Preference</option>
               <option value="Vegetarian">Vegetarian</option>
               <option value="Vegan">Vegan</option>
-              <option value="Non-Vegetarian">Non-Vegetarian</option>
             </select>
           </div>
 
@@ -208,8 +191,9 @@ export default function ProfileFormPage() {
             </label>
             <input
               type="number"
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
+              name="height"
+              value={formData.height}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               required
             />
@@ -220,8 +204,9 @@ export default function ProfileFormPage() {
               Fitness Goal
             </label>
             <select
-              value={fitnessGoal}
-              onChange={(e) => setFitnessGoal(e.target.value)}
+              name="fitnessGoal"
+              value={formData.fitnessGoal}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               required
             >
