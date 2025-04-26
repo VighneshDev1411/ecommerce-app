@@ -1,108 +1,93 @@
 "use client"; // Enable client-side functionality
 
 import React from "react";
-import Image from "next/image";
-import { X, ShoppingCart } from "lucide-react";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
+import { ShoppingCart, X } from "lucide-react";
 
-// Props interface for the Wishlist component
 interface WishlistProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-// Wishlist component
 const Wishlist = ({ open, setOpen }: WishlistProps) => {
-  // Get wishlist and cart functions from context
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
   const { addToCart } = useCart();
 
-  // If wishlist is not open, don't render anything
-  if (!open) return null;
-
-  // Function to move item to cart
   const handleMoveToCart = (item: any) => {
     addToCart(item);
     removeFromWishlist(item.id);
   };
 
+  if (!open) return null;
+
   return (
-    // Wishlist overlay
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-      {/* Wishlist panel */}
-      <div className="fixed right-0 top-0 h-full w-[400px] bg-white shadow-lg">
-        {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-semibold">Wishlist</h2>
+    <div className="absolute top-16 right-4 w-96 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 z-50">
+      <div className="p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900">Wishlist</h2>
           <button
             onClick={() => setOpen(false)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-400 hover:text-gray-500"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
         </div>
+      </div>
 
-        {/* Wishlist items */}
-        <div className="p-4 space-y-4 overflow-y-auto h-[calc(100vh-180px)]">
-          {wishlist.length === 0 ? (
-            <p className="text-center text-gray-500">Your wishlist is empty</p>
-          ) : (
-            wishlist.map((item) => (
+      <div className="max-h-[400px] overflow-y-auto p-4">
+        {wishlist.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">Your wishlist is empty</p>
+        ) : (
+          <div className="space-y-4">
+            {wishlist.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
+                className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
               >
-                {/* Product image */}
-                <div className="relative w-20 h-20">
-                  <Image
+                <div className="w-16 h-16 rounded-md border border-gray-200 overflow-hidden">
+                  <img
                     src={item.image}
                     alt={item.name}
-                    fill
-                    className="object-cover rounded-md"
+                    className="w-full h-full object-cover"
                   />
                 </div>
-
-                {/* Product details */}
-                <div className="flex-1">
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-blue-600 font-semibold">₹{item.price}</p>
-                </div>
-
-                {/* Action buttons */}
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => handleMoveToCart(item)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
-                    title="Move to Cart"
-                  >
-                    <ShoppingCart size={20} />
-                  </button>
-                  <button
-                    onClick={() => removeFromWishlist(item.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
-                    title="Remove from Wishlist"
-                  >
-                    <X size={20} />
-                  </button>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-gray-900 truncate">
+                    {item.name}
+                  </h3>
+                  <p className="text-sm font-medium text-blue-600">₹{item.price}</p>
+                  <div className="flex gap-3 mt-2">
+                    <button
+                      onClick={() => removeFromWishlist(item.id)}
+                      className="text-xs text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                    <button
+                      onClick={() => handleMoveToCart(item)}
+                      className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                    >
+                      <ShoppingCart size={12} /> Move to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
-
-        {/* Footer */}
-        {wishlist.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
-            <button
-              onClick={clearWishlist}
-              className="w-full py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            >
-              Clear Wishlist
-            </button>
+            ))}
           </div>
         )}
       </div>
+
+      {wishlist.length > 0 && (
+        <div className="p-4 border-t border-gray-100">
+          <button
+            onClick={clearWishlist}
+            className="w-full text-red-600 hover:text-red-700 text-sm font-medium"
+          >
+            Clear Wishlist
+          </button>
+        </div>
+      )}
     </div>
   );
 };
