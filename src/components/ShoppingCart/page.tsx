@@ -7,6 +7,8 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+import { Heart } from "lucide-react";
 
 interface CartProps {
   open: boolean;
@@ -29,6 +31,13 @@ export default function Cart() {
     updateQuantity,
     cartTotal,
   } = useCart();
+  const { addToWishlist } = useWishlist();
+
+  const handleMoveToWishlist = (product: any) => {
+    addToWishlist(product);
+    removeFromCart(product.id);
+  };
+
   return (
     <Dialog
       open={cartOpen}
@@ -78,13 +87,21 @@ export default function Cart() {
                                 <p className="ml-4">₹{product.price}</p>
                               </div>
                               <div className="flex flex-1 items-end justify-between text-sm">
-                                <button
-                                  type="button"
-                                  onClick={() => removeFromCart(product.id)}
-                                  className="font-medium text-red-500 hover:text-red-700"
-                                >
-                                  ❌ Remove
-                                </button>
+                                <div className="flex gap-4">
+                                  <button
+                                    type="button"
+                                    onClick={() => removeFromCart(product.id)}
+                                    className="font-medium text-red-500 hover:text-red-700"
+                                  >
+                                    ❌ Remove
+                                  </button>
+                                  <button
+                                    onClick={() => handleMoveToWishlist(product)}
+                                    className="flex items-center gap-1 font-medium text-blue-600 hover:text-blue-800"
+                                  >
+                                    <Heart size={16} /> Move to Wishlist
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </li>
