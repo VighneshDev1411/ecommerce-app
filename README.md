@@ -1,4 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VOLT - Personalized Health & Fitness E-commerce Platform
+
+## Overview
+VOLT is a modern e-commerce platform focused on health and fitness products with personalized recommendations based on user profiles. Built with Next.js 14, TypeScript, and MongoDB, it features a clean UI and seamless user experience.
+
+## Key Features
+- 🔐 Secure authentication using NextAuth.js
+- 👤 Customizable user profiles with health & fitness preferences
+- 🛒 User-specific shopping cart functionality
+- 🎯 Personalized product recommendations
+- 💫 Modern, responsive UI with Tailwind CSS
+- 🗄️ MongoDB integration for data persistence
+
+## Tech Stack
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB
+- **Authentication**: NextAuth.js
+- **State Management**: React Context
+- **Styling**: Tailwind CSS
+
+## Getting Started
+
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/volt-ecommerce.git
+```
+
+2. Install dependencies
+```bash
+cd volt-ecommerce
+npm install
+```
+
+3. Set up environment variables
+```env
+MONGODB_URI=your_mongodb_uri
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+4. Run the development server
+```bash
+npm run dev
+```
+
+## Project StructureThis is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
