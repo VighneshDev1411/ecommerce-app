@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import ProductCard from "../ProductCard/page";
 import Cart from "../ShoppingCart/page";
@@ -15,7 +16,7 @@ interface ProductProps {
 const CategoryTabs = () => {
   const [activeTab, setActiveTab] = useState("best_sellers");
   const [products, setProducts] = useState<ProductProps[]>([]);
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(6);
   const [loading, setLoading] = useState(false);
   const { cartOpen, setCartOpen, cart, addToCart, removeFromCart } = useCart();
 
@@ -25,9 +26,8 @@ const CategoryTabs = () => {
       try {
         const res = await fetch(`/api/products?category=${activeTab}`);
         const data = await res.json();
-        // Make sure we map MongoDB's _id to id
         const mappedProducts = data.map((product: any) => ({
-          id: product._id, // map _id to id
+          id: product._id,
           name: product.name,
           price: product.price,
           image: product.image,
@@ -35,7 +35,7 @@ const CategoryTabs = () => {
           rating: product.rating,
         }));
         setProducts(mappedProducts);
-        setVisibleCount(5); // reset visible count on tab switch
+        setVisibleCount(6);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -46,29 +46,25 @@ const CategoryTabs = () => {
     fetchProducts();
   }, [activeTab]);
 
-  const showMore = () => {
-    setVisibleCount((prev) => prev + 5);
-  };
-
   return (
-    <div>
+    <div className="max-w-screen-xl mx-auto">
       {/* Tabs */}
-      <div className="flex justify-center space-x-4 bg-white py-4">
+      <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-8">
         <button
-          className={`px-6 py-2 font-semibold border-b-4 ${
+          className={`px-6 py-2 font-semibold border-b-2 transition-all duration-200 ${
             activeTab === "best_sellers"
               ? "border-[#222222] text-[#222222]"
-              : "border-transparent text-gray-600"
+              : "border-transparent text-gray-600 hover:text-gray-800"
           }`}
           onClick={() => setActiveTab("best_sellers")}
         >
           BEST SELLERS
         </button>
         <button
-          className={`px-6 py-2 font-semibold border-b-4 ${
+          className={`px-6 py-2 font-semibold border-b-2 transition-all duration-200 ${
             activeTab === "new_arrivals"
               ? "border-[#222222] text-[#222222]"
-              : "border-transparent text-gray-600"
+              : "border-transparent text-gray-600 hover:text-gray-800"
           }`}
           onClick={() => setActiveTab("new_arrivals")}
         >
@@ -76,47 +72,53 @@ const CategoryTabs = () => {
         </button>
       </div>
 
-      {/* Product Cards */}
-      {!loading && products.length > 5 && (
-        <div className="flex mr-4 mb-6 justify-end px-6 mt-2">
-          <span
-            className="text-sm text-[#222222] font-semibold cursor-pointer hover:underline"
-            onClick={() =>
-              visibleCount >= products.length
-                ? setVisibleCount(5)
-                : setVisibleCount((prev) => prev + 5)
-            }
-          >
-            {visibleCount >= products.length ? "Show Less" : "Show More"}
-          </span>
-        </div>
-      )}
-
-      <div className="container mx-auto px-6 pb-6">
+      {/* Products Grid */}
+      <div className="px-4">
         {loading ? (
-          <p className="text-center text-gray-500">Loading products...</p>
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#222222]"></div>
+          </div>
         ) : (
-          <div className="flex flex-col space-y-6">
-            {products
-              .slice(0, visibleCount)
-              .reduce((rows: ProductProps[][], product, i) => {
-                const rowIndex = Math.floor(i / 5);
-                if (!rows[rowIndex]) rows[rowIndex] = [];
-                rows[rowIndex].push(product);
-                return rows;
-              }, [])
-              .map((row, i) => (
-                <div key={`row-${i}`} className="flex gap-4">
-                  {row.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      {...product}
-                      addToCart={addToCart}
-                    />
-                  ))}
+          <>
+            <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+              {products.slice(0, visibleCount).map((product) => (
+                <div key={product.id} className="w-[280px]">
+                  <ProductCard {...product} />
                 </div>
               ))}
-          </div>
+            </div>
+
+            {/* Show More/Less Button */}
+            {products.length > 6 && (
+              <div className="flex justify-center mt-8">
+                <button
+                  onClick={() =>
+                    setVisibleCount(visibleCount === 6 ? products.length : 6)
+                  }
+                  className="text-[#222222] font-semibold hover:underline transition-all duration-200 flex items-center space-x-2"
+                >
+                  <span>
+                    {visibleCount === 6 ? "Show More" : "Show Less"}
+                  </span>
+                  <svg
+                    className={`w-4 h-4 transform transition-transform duration-200 ${
+                      visibleCount === 6 ? "rotate-0" : "rotate-180"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 

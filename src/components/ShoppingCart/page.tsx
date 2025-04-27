@@ -3,6 +3,13 @@
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { Heart, X } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import { useEffect, useState } from "react";
+
+// Initialize Stripe outside the component
+const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  : null;
 
 export default function Cart() {
   const {
@@ -14,10 +21,71 @@ export default function Cart() {
     cartTotal,
   } = useCart();
   const { addToWishlist } = useWishlist();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleMoveToWishlist = (product: any) => {
     addToWishlist(product);
     removeFromCart(product.id);
+  };
+
+  const handleCheckout = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      if (!stripePromise) {
+        throw new Error("Stripe is not configured properly");
+      }
+
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error("Failed to initialize Stripe");
+      }
+
+      // Validate cart items
+      if (!cart || cart.length === 0) {
+        throw new Error("Cart is empty");
+      }
+
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          items: cart.map(item => ({
+            ...item,
+            price: Number(item.price),
+            quantity: Number(item.quantity || 1)
+          }))
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create checkout session");
+      }
+
+      const { sessionId } = await response.json();
+      
+      if (!sessionId) {
+        throw new Error("No session ID received from server");
+      }
+
+      const { error: stripeError } = await stripe.redirectToCheckout({ 
+        sessionId,
+      });
+
+      if (stripeError) {
+        throw new Error(stripeError.message);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setError(error instanceof Error ? error.message : "An error occurred during checkout");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!cartOpen) return null;
@@ -36,7 +104,7 @@ export default function Cart() {
         </div>
       </div>
 
-      <div className="max-h-[400px] overflow-y-auto p-4">
+      <div className="p-4">
         {cart.length === 0 ? (
           <p className="text-gray-500 text-center py-4">Your cart is empty</p>
         ) : (
@@ -57,7 +125,9 @@ export default function Cart() {
                   <h3 className="text-sm font-medium text-gray-900 truncate">
                     {product.name}
                   </h3>
-                  <p className="text-sm font-medium text-blue-600">₹{product.price}</p>
+                  <p className="text-sm font-medium text-blue-600">
+                    ₹{product.price}
+                  </p>
                   <div className="flex gap-3 mt-2">
                     <button
                       onClick={() => removeFromCart(product.id)}
@@ -85,8 +155,19 @@ export default function Cart() {
             <span className="font-medium">Subtotal</span>
             <span className="font-medium">₹{cartTotal.toFixed(2)}</span>
           </div>
-          <button className="w-full bg-[#222222] text-white py-2.5 rounded-lg hover:bg-[#333333] transition-colors">
-            Checkout
+          {error && (
+            <div className="mb-4 p-2 bg-red-50 text-red-600 text-sm rounded">
+              {error}
+            </div>
+          )}
+          <button
+            onClick={handleCheckout}
+            disabled={isLoading}
+            className={`w-full bg-[#222222] text-white py-2.5 rounded-lg hover:bg-[#333333] transition-colors ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isLoading ? "Processing..." : "Checkout"}
           </button>
         </div>
       )}

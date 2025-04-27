@@ -35,7 +35,7 @@ export default function ProductList({ products }: any) {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10; // Shows 10 products (5 per row × 2 rows)
+  const productsPerPage = 9; // Shows 9 products (3 per row × 3 rows)
 
   // Calculate pagination
   const totalPages = Math.ceil(products.length / productsPerPage);
@@ -47,60 +47,39 @@ export default function ProductList({ products }: any) {
   );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
     <>
-      <div className="space-y-6">
-        {/* Product Grid - Maintains your 5 items per row layout */}
-        <div className="flex flex-wrap justify-center">
+      <div className="max-w-[1200px] mx-auto px-6 space-y-8">
+        {/* Product Grid using Flexbox */}
+        <div className="flex flex-wrap justify-center gap-8">
           {currentProducts.map((product: ProductProps) => (
-            <div key={product.id} className="w-1/2 p-2 ">
-              <ProductCard {...product} image={product.image} />
+            <div key={product.id} className="w-[280px] mb-4">
+              <ProductCard {...product} image={product.image || ""} />
             </div>
           ))}
         </div>
 
         {/* Pagination Controls */}
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage > 1) paginate(currentPage - 1);
-                }}
-                className={
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }
-              />
-            </PaginationItem>
+        <div className="flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) paginate(currentPage - 1);
+                  }}
+                  className={
+                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  }
+                />
+              </PaginationItem>
 
-            {/* Show page numbers (with ellipsis for many pages) */}
-            {totalPages <= 5 ? (
-              Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (number) => (
-                  <PaginationItem key={number}>
-                    <Button
-                      variant={currentPage === number ? "default" : "ghost"}
-                      onClick={() => paginate(number)}
-                    >
-                      {number}
-                    </Button>
-                  </PaginationItem>
-                )
-              )
-            ) : (
-              <>
-                {currentPage > 2 && (
-                  <PaginationItem>
-                    <Button variant="ghost" onClick={() => paginate(1)}>
-                      1
-                    </Button>
-                  </PaginationItem>
-                )}
-                {currentPage > 3 && <PaginationItem>...</PaginationItem>}
-                {[currentPage - 1, currentPage, currentPage + 1].map((number) =>
-                  number > 0 && number <= totalPages ? (
+              {totalPages <= 5 ? (
+                Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (number) => (
                     <PaginationItem key={number}>
                       <Button
                         variant={currentPage === number ? "default" : "ghost"}
@@ -109,40 +88,63 @@ export default function ProductList({ products }: any) {
                         {number}
                       </Button>
                     </PaginationItem>
-                  ) : null
-                )}
-                {currentPage < totalPages - 2 && (
-                  <PaginationItem>...</PaginationItem>
-                )}
-                {currentPage < totalPages - 1 && (
-                  <PaginationItem>
-                    <Button
-                      variant="ghost"
-                      onClick={() => paginate(totalPages)}
-                    >
-                      {totalPages}
-                    </Button>
-                  </PaginationItem>
-                )}
-              </>
-            )}
+                  )
+                )
+              ) : (
+                <>
+                  {currentPage > 2 && (
+                    <PaginationItem>
+                      <Button variant="ghost" onClick={() => paginate(1)}>
+                        1
+                      </Button>
+                    </PaginationItem>
+                  )}
+                  {currentPage > 3 && <PaginationItem>...</PaginationItem>}
+                  {[currentPage - 1, currentPage, currentPage + 1].map((number) =>
+                    number > 0 && number <= totalPages ? (
+                      <PaginationItem key={number}>
+                        <Button
+                          variant={currentPage === number ? "default" : "ghost"}
+                          onClick={() => paginate(number)}
+                        >
+                          {number}
+                        </Button>
+                      </PaginationItem>
+                    ) : null
+                  )}
+                  {currentPage < totalPages - 2 && (
+                    <PaginationItem>...</PaginationItem>
+                  )}
+                  {currentPage < totalPages - 1 && (
+                    <PaginationItem>
+                      <Button
+                        variant="ghost"
+                        onClick={() => paginate(totalPages)}
+                      >
+                        {totalPages}
+                      </Button>
+                    </PaginationItem>
+                  )}
+                </>
+              )}
 
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage < totalPages) paginate(currentPage + 1);
-                }}
-                className={
-                  currentPage === totalPages
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages) paginate(currentPage + 1);
+                  }}
+                  className={
+                    currentPage === totalPages
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
       <Cart
         open={cartOpen}
