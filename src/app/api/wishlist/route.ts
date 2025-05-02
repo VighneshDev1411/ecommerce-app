@@ -67,14 +67,14 @@ export async function POST(request: Request) {
 
     // Create new wishlist if it doesn't exist
     if (!wishlist) {
-      wishlist = {
-        _id: new ObjectId(),
+      const newWishlist = {
         userId: session.user.id,
         items: [],
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      await db.collection("wishlists").insertOne(wishlist);
+      await db.collection("wishlists").insertOne(newWishlist);
+      wishlist = await db.collection("wishlists").findOne({ userId: session.user.id });
     }
 
     // Handle different actions

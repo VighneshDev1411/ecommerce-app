@@ -1,7 +1,8 @@
 "use client";
 
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
+// import { useCart } from "@/context/CartContext";
+import { useCart } from "@/src/context/CartContext";
+import { useWishlist } from "@/src/context/WishlistContext";
 import { Heart, X } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";

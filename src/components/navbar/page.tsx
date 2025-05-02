@@ -5,8 +5,9 @@ import { ChevronDown, Search, ShoppingCart, User, Heart, Menu, X } from "lucide-
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import volt_logo from "../../../public/assets/images/volt.png";
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
+
+import { useCart } from "@/src/context/CartContext";
+import { useWishlist } from "@/src/context/WishlistContext";
 import {
   DropdownMenu,
   DropdownMenuContent,

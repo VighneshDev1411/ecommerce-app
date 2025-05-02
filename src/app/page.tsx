@@ -6,7 +6,7 @@ import Cart from "../components/ShoppingCart/page";
 import ProductAuthenticity from "../components/SectionProductAutheticity/page";
 import CategoriesSection from "../components/CategoriesSection/page";
 import pa from "../../public/assets/images/pa.png";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "../context/CartContext";
 
 export default function Home() {
   const { cartOpen, setCartOpen } = useCart();
@@ -24,7 +24,8 @@ export default function Home() {
                 Fuel Your <span className="text-[#222222]">Goals</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-600 max-w-lg">
-                Discover premium supplements tailored to your fitness journey. Quality products, proven results.
+                Discover premium supplements tailored to your fitness journey.
+                Quality products, proven results.
               </p>
               <button className="bg-[#222222] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#333333] transition-colors">
                 Shop Now
@@ -47,7 +48,9 @@ export default function Home() {
       {/* Featured Products Section */}
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Featured Products</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+            Featured Products
+          </h2>
           <CategoryTabs />
         </div>
       </section>
@@ -56,9 +59,9 @@ export default function Home() {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-screen-xl mx-auto">
-            <Image 
-              src={pa} 
-              alt="authenticity_tag" 
+            <Image
+              src={pa}
+              alt="authenticity_tag"
               className="w-full h-auto rounded-lg shadow-md"
             />
           </div>

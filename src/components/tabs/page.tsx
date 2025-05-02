@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../ProductCard/page";
 import Cart from "../ShoppingCart/page";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/src/context/CartContext";
 
 interface ProductProps {
   id: string;
@@ -97,9 +97,7 @@ const CategoryTabs = () => {
                   }
                   className="text-[#222222] font-semibold hover:underline transition-all duration-200 flex items-center space-x-2"
                 >
-                  <span>
-                    {visibleCount === 6 ? "Show More" : "Show Less"}
-                  </span>
+                  <span>{visibleCount === 6 ? "Show More" : "Show Less"}</span>
                   <svg
                     className={`w-4 h-4 transform transition-transform duration-200 ${
                       visibleCount === 6 ? "rotate-0" : "rotate-180"

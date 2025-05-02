@@ -54,6 +54,11 @@ export function UserDropdown() {
               <DropdownMenuItem onClick={() => setIsProfileModalOpen(true)}>
                 Profile
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/orders" className="w-full cursor-pointer">
+                  My Orders
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600 focus:text-red-600"
                 onClick={() => signOut({ callbackUrl: "/" })}
@@ -94,9 +99,9 @@ export function UserDropdown() {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <ProfileModal 
-        isOpen={isProfileModalOpen} 
-        onClose={() => setIsProfileModalOpen(false)} 
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
       />
     </>
   );

@@ -1,8 +1,8 @@
 "use client"; // Enable client-side functionality
 
 import React from "react";
-import { useWishlist } from "@/context/WishlistContext";
-import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/src/context/WishlistContext";
+import { useCart } from "@/src/context/CartContext";
 import { ShoppingCart, X } from "lucide-react";
 
 interface WishlistProps {

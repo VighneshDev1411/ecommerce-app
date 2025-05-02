@@ -3,7 +3,7 @@
     "target": "ES2017",
     "baseUrl": ".",  // Add this line - crucial for path resolution
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./*"],
       "@/config/*": ["config/*"],
       "@/lib/*": ["lib/*"],
       "@/components/*": ["components/*"]
