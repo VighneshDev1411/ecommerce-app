@@ -15,7 +15,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <div className="flex w-full flex-col justify-center gap-8 items-center">
+    <div className="flex w-full flex-col justify-center gap-8">
       <div className="w-full">
         <Navbar setCartOpen={setCartOpen} />
       </div>

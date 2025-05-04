@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const db = client.db("VOLT_DB");
 
-    // Check if user already exists
+
     const existingUser = await db.collection("users").findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -17,10 +17,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hash password
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
+ 
     const result = await db.collection("users").insertOne({
       name,
       email,
@@ -28,18 +28,17 @@ export async function POST(request: Request) {
       emailVerified: null,
       createdAt: new Date(),
       updatedAt: new Date(),
-      isNewUser: true // Flag to identify first-time users
+      isNewUser: true
     });
 
-    // Create empty profile in users_profile collection
+
     await db.collection("users_profile").insertOne({
-      userId: result.insertedId.toString(), // Using the user's _id as reference
-      email, // Store email in profile as well
-      name, // Store name in profile as well
-      profileComplete: false, // Flag to track if profile is complete
+      userId: result.insertedId.toString(), 
+      email,
+      name, 
+      profileComplete: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-      // Other profile fields can be initialized as empty/null
       gender: "",
       weight: "",
       weightGoal: "",
